@@ -4,15 +4,20 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.github.quillraven.fleks.Component
 import com.github.quillraven.fleks.ComponentType
 import ktx.collections.GdxArray
+import ktx.collections.gdxArrayOf
 
-data class Animate(
-    var animations: MutableMap<String, GdxArray<TextureRegion>> = mutableMapOf(),
-    var current: String = "",
-    var loop: Boolean = false,
-    var frameDuration: Float = 0.1f,
-    var stateTime: Float = 0f
-) : Component<Animate> {
-    override fun type() = Animate
+data class AnimationBag(
+    var animations: MutableMap<String, Animate> = mutableMapOf(),
+    var current: String = ""
+) : Component<AnimationBag> {
+    override fun type() = AnimationBag
 
-    companion object : ComponentType<Animate>()
+    companion object : ComponentType<AnimationBag>()
+
+    data class Animate(
+        var animation: GdxArray<TextureRegion> = gdxArrayOf(),
+        var frameDuration: Float = 0.1f,
+        var stateTime: Float = 0f,
+        var loop: Boolean = false
+    )
 }

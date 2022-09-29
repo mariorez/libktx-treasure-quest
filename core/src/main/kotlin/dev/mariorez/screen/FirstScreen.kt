@@ -14,7 +14,8 @@ import dev.mariorez.Action.RIGHT
 import dev.mariorez.Action.UP
 import dev.mariorez.BaseScreen
 import dev.mariorez.Sizes
-import dev.mariorez.component.Animate
+import dev.mariorez.component.AnimationBag
+import dev.mariorez.component.AnimationBag.Animate
 import dev.mariorez.component.Player
 import dev.mariorez.component.Render
 import dev.mariorez.component.Transform
@@ -26,7 +27,6 @@ import dev.mariorez.system.MovementSystem
 import dev.mariorez.system.RenderSystem
 import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
-import ktx.collections.gdxArrayOf
 import ktx.tiled.forEachMapObject
 import ktx.tiled.totalHeight
 import ktx.tiled.totalWidth
@@ -94,45 +94,53 @@ class FirstScreen(
     private fun spawnEntities() {
         tiledMap.forEachMapObject("objects") { obj ->
             when (obj.type) {
-                "player" -> {
-                    val cols = 4
-                    val rows = 4
-                    val hero = assets.get<Texture>("hero.png")
-                    val regions = TextureRegion(hero).split(hero.width / cols, hero.height / rows)
-                    val animate = Animate().apply {
-                        animations.also {
-                            (0 until cols).forEach { col ->
-                                it.getOrPut("south") { gdxArrayOf() }.apply {
-                                    add(TextureRegion(regions[0][col]))
-                                }
-                                it.getOrPut("west") { gdxArrayOf() }.apply {
-                                    add(TextureRegion(regions[1][col]))
-                                }
-                                it.getOrPut("east") { gdxArrayOf() }.apply {
-                                    add(TextureRegion(regions[2][col]))
-                                }
-                                it.getOrPut("north") { gdxArrayOf() }.apply {
-                                    add(TextureRegion(regions[3][col]))
-                                }
-                            }
-                        }
-                    }
+                "player" -> spawnPlayer(obj.x, obj.y)
+            }
+        }
+    }
 
-                    player = world.entity {
-                        it += Player()
-                        it += Render()
-                        it += animate.apply {
-                            current = "south"
-                            frameDuration = 0.2f
-                        }
-                        it += Transform().apply {
-                            position.set(obj.x, obj.y)
-                            acceleration = 600f
-                            deceleration = 600f
-                            maxSpeed = 150f
-                        }
+    private fun spawnPlayer(x: Float, y: Float) {
+        val cols = 4
+        val rows = 4
+        val hero = assets.get<Texture>("hero.png")
+        val regions = TextureRegion(hero).split(hero.width / cols, hero.height / rows)
+
+        val animationBag = AnimationBag().apply {
+            animations.apply {
+                (0 until cols).forEach { col ->
+                    getOrPut("south") {
+                        Animate().apply { frameDuration = 0.2f }
+                    }.apply {
+                        animation.add(TextureRegion(regions[0][col]))
+                    }
+                    getOrPut("west") {
+                        Animate().apply { frameDuration = 0.2f }
+                    }.apply {
+                        animation.add(TextureRegion(regions[1][col]))
+                    }
+                    getOrPut("east") {
+                        Animate().apply { frameDuration = 0.2f }
+                    }.apply {
+                        animation.add(TextureRegion(regions[2][col]))
+                    }
+                    getOrPut("north") {
+                        Animate().apply { frameDuration = 0.2f }
+                    }.apply {
+                        animation.add(TextureRegion(regions[3][col]))
                     }
                 }
+            }
+        }
+
+        player = world.entity {
+            it += Player()
+            it += Render()
+            it += animationBag.apply { current = "south" }
+            it += Transform().apply {
+                position.set(x, y)
+                acceleration = 800f
+                deceleration = 800f
+                maxSpeed = 150f
             }
         }
     }

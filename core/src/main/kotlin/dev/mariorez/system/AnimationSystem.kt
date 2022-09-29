@@ -5,28 +5,25 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
-import dev.mariorez.component.Animate
+import dev.mariorez.component.AnimationBag
 import dev.mariorez.component.Render
 
 class AnimationSystem : IteratingSystem(
-    family { all(Animate, Render) }
+    family { all(AnimationBag, Render) }
 ) {
 
     private val animationCache = mutableMapOf<String, Animation<TextureRegion>>()
     override fun onTickEntity(entity: Entity) {
-        entity[Animate].stateTime += deltaTime
 
-        val animation = animationCache.getOrPut(entity[Animate].current) {
-            Animation(
-                entity[Animate].frameDuration,
-                entity[Animate].animations[entity[Animate].current]
-            )
+        val animate = entity[AnimationBag].animations[entity[AnimationBag].current]
+
+        animate!!.stateTime += deltaTime
+
+        val animation = animationCache.getOrPut(entity[AnimationBag].current) {
+            Animation(animate!!.frameDuration, animate.animation)
         }
 
-        val textureRegion = animation.getKeyFrame(
-            entity[Animate].stateTime,
-            entity[Animate].loop
-        )
+        val textureRegion = animation.getKeyFrame(animate!!.stateTime, animate.loop)
 
         entity[Render].sprite.apply {
             setRegion(textureRegion)
