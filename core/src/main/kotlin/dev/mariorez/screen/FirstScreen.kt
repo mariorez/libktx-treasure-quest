@@ -2,6 +2,7 @@ package dev.mariorez.screen
 
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer
@@ -27,6 +28,7 @@ import dev.mariorez.system.MovementSystem
 import dev.mariorez.system.RenderSystem
 import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
+import ktx.collections.gdxArrayOf
 import ktx.tiled.forEachMapObject
 import ktx.tiled.totalHeight
 import ktx.tiled.totalWidth
@@ -105,37 +107,28 @@ class FirstScreen(
         val hero = assets.get<Texture>("hero.png")
         val regions = TextureRegion(hero).split(hero.width / cols, hero.height / rows)
 
-        val animationBag = AnimationBag().apply {
-            animations.apply {
-                (0 until cols).forEach { col ->
-                    getOrPut("south") {
-                        Animate().apply { frameDuration = 0.2f }
-                    }.apply {
-                        animation.add(TextureRegion(regions[0][col]))
-                    }
-                    getOrPut("west") {
-                        Animate().apply { frameDuration = 0.2f }
-                    }.apply {
-                        animation.add(TextureRegion(regions[1][col]))
-                    }
-                    getOrPut("east") {
-                        Animate().apply { frameDuration = 0.2f }
-                    }.apply {
-                        animation.add(TextureRegion(regions[2][col]))
-                    }
-                    getOrPut("north") {
-                        Animate().apply { frameDuration = 0.2f }
-                    }.apply {
-                        animation.add(TextureRegion(regions[3][col]))
-                    }
-                }
-            }
+        val south = gdxArrayOf<TextureRegion>()
+        val west = gdxArrayOf<TextureRegion>()
+        val east = gdxArrayOf<TextureRegion>()
+        val north = gdxArrayOf<TextureRegion>()
+
+        (0 until cols).forEach { col ->
+            south.add(TextureRegion(regions[0][col]))
+            west.add(TextureRegion(regions[1][col]))
+            east.add(TextureRegion(regions[2][col]))
+            north.add(TextureRegion(regions[3][col]))
         }
 
         player = world.entity {
             it += Player()
             it += Render()
-            it += animationBag.apply { current = "south" }
+            it += AnimationBag().apply {
+                animations["south"] = Animate(Animation(0.2f, south))
+                animations["west"] = Animate(Animation(0.2f, west))
+                animations["east"] = Animate(Animation(0.2f, east))
+                animations["north"] = Animate(Animation(0.2f, north))
+                current = "south"
+            }
             it += Transform().apply {
                 position.set(x, y)
                 acceleration = 800f

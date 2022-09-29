@@ -1,7 +1,5 @@
 package dev.mariorez.system
 
-import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
@@ -12,18 +10,17 @@ class AnimationSystem : IteratingSystem(
     family { all(AnimationBag, Render) }
 ) {
 
-    private val animationCache = mutableMapOf<String, Animation<TextureRegion>>()
     override fun onTickEntity(entity: Entity) {
 
-        val animate = entity[AnimationBag].animations[entity[AnimationBag].current]
-
-        animate!!.stateTime += deltaTime
-
-        val animation = animationCache.getOrPut(entity[AnimationBag].current) {
-            Animation(animate!!.frameDuration, animate.animation)
+        val animate = with(entity[AnimationBag]) {
+            animations.getOrElse(current) {
+                return
+            }
         }
 
-        val textureRegion = animation.getKeyFrame(animate!!.stateTime, animate.loop)
+        animate.stateTime += deltaTime
+
+        val textureRegion = animate.animation.getKeyFrame(animate.stateTime, animate.loop)
 
         entity[Render].sprite.apply {
             setRegion(textureRegion)

@@ -15,10 +15,14 @@ class InputSystem : IteratingSystem(
     private val speedUp = Vector2()
 
     override fun onTickEntity(entity: Entity) {
-        val animate = entity[AnimationBag].animations[entity[AnimationBag].current]
+        val animate = with(entity[AnimationBag]) {
+            animations.getOrElse(current) {
+                return
+            }
+        }
 
         if (entity[Player].isStopped) {
-            animate!!.loop = false
+            animate.loop = false
             return
         }
 
@@ -48,6 +52,6 @@ class InputSystem : IteratingSystem(
             }
         }
 
-        animate!!.loop = true
+        animate.loop = true
     }
 }
