@@ -48,7 +48,7 @@ class GameBoot : KtxGame<KtxScreen>() {
 
         assets.apply {
             setLoader<TiledMap> { TmxMapLoader(fileResolver) }
-            loadSync<Texture>("npc-1.png").setFilter(Linear, Linear)
+            loadSync<Texture>("hero.png").setFilter(Linear, Linear)
             loadSync<TiledMap>("map.tmx")
         }
 

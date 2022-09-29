@@ -2,7 +2,7 @@ package dev.mariorez.screen
 
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer
 import com.github.quillraven.fleks.Entity
@@ -14,9 +14,11 @@ import dev.mariorez.Action.RIGHT
 import dev.mariorez.Action.UP
 import dev.mariorez.BaseScreen
 import dev.mariorez.Sizes
+import dev.mariorez.component.Animate
 import dev.mariorez.component.Player
 import dev.mariorez.component.Render
 import dev.mariorez.component.Transform
+import dev.mariorez.system.AnimationSystem
 import dev.mariorez.system.BoundToWorldSystem
 import dev.mariorez.system.CameraSystem
 import dev.mariorez.system.InputSystem
@@ -24,6 +26,7 @@ import dev.mariorez.system.MovementSystem
 import dev.mariorez.system.RenderSystem
 import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
+import ktx.collections.gdxArrayOf
 import ktx.tiled.forEachMapObject
 import ktx.tiled.totalHeight
 import ktx.tiled.totalWidth
@@ -55,6 +58,7 @@ class FirstScreen(
             add(MovementSystem())
             add(BoundToWorldSystem())
             add(CameraSystem())
+            add(AnimationSystem())
             add(RenderSystem())
         }
     }
@@ -91,14 +95,40 @@ class FirstScreen(
         tiledMap.forEachMapObject("objects") { obj ->
             when (obj.type) {
                 "player" -> {
-                    val hero = assets.get<Texture>("npc-1.png")
+                    val cols = 4
+                    val rows = 4
+                    val hero = assets.get<Texture>("hero.png")
+                    val regions = TextureRegion(hero).split(hero.width / cols, hero.height / rows)
+                    val animate = Animate().apply {
+                        animations.also {
+                            (0 until cols).forEach { col ->
+                                it.getOrPut("south") { gdxArrayOf() }.apply {
+                                    add(TextureRegion(regions[0][col]))
+                                }
+                                it.getOrPut("west") { gdxArrayOf() }.apply {
+                                    add(TextureRegion(regions[1][col]))
+                                }
+                                it.getOrPut("east") { gdxArrayOf() }.apply {
+                                    add(TextureRegion(regions[2][col]))
+                                }
+                                it.getOrPut("north") { gdxArrayOf() }.apply {
+                                    add(TextureRegion(regions[3][col]))
+                                }
+                            }
+                        }
+                    }
+
                     player = world.entity {
                         it += Player()
-                        it += Render(Sprite(hero, hero.width, hero.height))
+                        it += Render()
+                        it += animate.apply {
+                            current = "south"
+                            frameDuration = 0.2f
+                        }
                         it += Transform().apply {
                             position.set(obj.x, obj.y)
-                            acceleration = 400f
-                            deceleration = 250f
+                            acceleration = 600f
+                            deceleration = 600f
                             maxSpeed = 150f
                         }
                     }
