@@ -8,6 +8,7 @@ import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import com.github.quillraven.fleks.World.Companion.inject
 import dev.mariorez.component.Render
+import dev.mariorez.component.Solid
 import dev.mariorez.component.Transform
 import ktx.graphics.use
 
@@ -31,6 +32,11 @@ class RenderSystem(
     }
 
     override fun onTickEntity(entity: Entity) {
+
+        if (entity.has(Solid) && entity[Solid].name == "solid") {
+            return
+        }
+
         entity[Render].sprite.apply {
             setBounds(
                 entity[Transform].position.x,

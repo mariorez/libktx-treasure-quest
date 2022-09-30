@@ -93,22 +93,22 @@
  <objectgroup id="2" name="objects">
   <object id="1" x="0" y="0" width="1280" height="32">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="3" x="0" y="32" width="32" height="1248">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="4" x="1248" y="32" width="32" height="1248">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="5" x="32" y="1248" width="1216" height="32">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="6" x="640" y="1088" width="32" height="32">
@@ -171,52 +171,52 @@
   <object id="74" gid="41" x="704" y="672" width="32" height="32"/>
   <object id="75" x="736" y="672" width="256" height="32">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="78" x="352" y="672" width="256" height="32">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="79" x="352" y="896" width="96" height="32">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="80" x="512" y="896" width="96" height="32">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="81" x="736" y="896" width="96" height="32">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="82" x="896" y="896" width="96" height="32">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="83" x="960" y="704" width="32" height="192">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="84" x="736" y="704" width="32" height="192">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="85" x="576" y="704" width="32" height="192">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="86" x="352" y="704" width="32" height="192">
    <properties>
-    <property name="name" value="Solid"/>
+    <property name="type" value="solid"/>
    </properties>
   </object>
   <object id="87" gid="45" x="192" y="1088" width="32" height="32"/>

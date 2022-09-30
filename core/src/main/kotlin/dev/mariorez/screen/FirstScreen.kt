@@ -19,8 +19,10 @@ import dev.mariorez.BaseScreen
 import dev.mariorez.Sizes
 import dev.mariorez.component.AnimationBag
 import dev.mariorez.component.AnimationBag.Animate
+import dev.mariorez.component.Enemy
 import dev.mariorez.component.Player
 import dev.mariorez.component.Render
+import dev.mariorez.component.Solid
 import dev.mariorez.component.Transform
 import dev.mariorez.system.AnimationSystem
 import dev.mariorez.system.BoundToWorldSystem
@@ -32,9 +34,11 @@ import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
 import ktx.collections.gdxArrayOf
 import ktx.tiled.forEachMapObject
+import ktx.tiled.height
 import ktx.tiled.totalHeight
 import ktx.tiled.totalWidth
 import ktx.tiled.type
+import ktx.tiled.width
 import ktx.tiled.x
 import ktx.tiled.y
 import kotlin.properties.Delegates
@@ -118,6 +122,7 @@ class FirstScreen(
                     "flyer" -> spawnFlayer(obj.x, obj.y)
                     "bush", "rock", "treasure", "heart-icon", "arrow-icon", "coin" -> {
                         world.entity {
+                            it += Solid(type.toString())
                             it += Render(Sprite(assets.get<Texture>("$type.png")))
                             it += Transform().apply { position.set(obj.x, obj.y) }
                         }
@@ -125,6 +130,7 @@ class FirstScreen(
 
                     "npc" -> {
                         world.entity {
+                            it += Solid(obj.name)
                             it += Render(Sprite(assets.get<Texture>("${obj.name}.png")))
                             it += Transform().apply { position.set(obj.x, obj.y) }
                         }
@@ -134,6 +140,13 @@ class FirstScreen(
             } else {
                 when (obj.type) {
                     "player" -> spawnPlayer(obj.x, obj.y)
+                    "solid" -> {
+                        world.entity {
+                            it += Solid(obj.type.toString())
+                            it += Render().apply { sprite.setSize(obj.width, obj.height) }
+                            it += Transform().apply { position.set(obj.x, obj.y) }
+                        }
+                    }
                 }
             }
         }
@@ -185,6 +198,7 @@ class FirstScreen(
             (0 until cols).forEach { col -> add(TextureRegion(regions[0][col])) }
         }
         world.entity {
+            it += Enemy()
             it += Render()
             it += AnimationBag().apply {
                 animations["flyer"] = Animate(Animation(0.1f, animation), loop = true)
