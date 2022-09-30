@@ -3,8 +3,10 @@ package dev.mariorez.screen
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject
 import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer
 import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.world
@@ -82,6 +84,20 @@ class FirstScreen(
         assets.disposeSafely()
     }
 
+    override fun doAction(action: Action) {
+        with(world) {
+            player[Player].apply {
+                when (action) {
+                    UP -> up = action.starting
+                    DOWN -> down = action.starting
+                    LEFT -> left = action.starting
+                    RIGHT -> right = action.starting
+                    else -> super.doAction(action)
+                }
+            }
+        }
+    }
+
     private fun buildControls() {
         actionMap[Keys.UP] = UP
         actionMap[Keys.DOWN] = DOWN
@@ -95,8 +111,30 @@ class FirstScreen(
 
     private fun spawnEntities() {
         tiledMap.forEachMapObject("objects") { obj ->
-            when (obj.type) {
-                "player" -> spawnPlayer(obj.x, obj.y)
+            if (obj is TiledMapTileMapObject) {
+                val props = obj.getProperties()
+                obj.tile.properties.keys.forEach { key -> props.put(key, obj.tile.properties[key]) }
+                when (val type = obj.tile.properties["type"]) {
+                    "flyer" -> spawnFlayer(obj.x, obj.y)
+                    "bush", "rock", "treasure", "heart-icon", "arrow-icon", "coin" -> {
+                        world.entity {
+                            it += Render(Sprite(assets.get<Texture>("$type.png")))
+                            it += Transform().apply { position.set(obj.x, obj.y) }
+                        }
+                    }
+
+                    "npc" -> {
+                        world.entity {
+                            it += Render(Sprite(assets.get<Texture>("${obj.name}.png")))
+                            it += Transform().apply { position.set(obj.x, obj.y) }
+                        }
+                    }
+
+                }
+            } else {
+                when (obj.type) {
+                    "player" -> spawnPlayer(obj.x, obj.y)
+                }
             }
         }
     }
@@ -138,16 +176,22 @@ class FirstScreen(
         }
     }
 
-    override fun doAction(action: Action) {
-        with(world) {
-            player[Player].apply {
-                when (action) {
-                    UP -> up = action.starting
-                    DOWN -> down = action.starting
-                    LEFT -> left = action.starting
-                    RIGHT -> right = action.starting
-                    else -> super.doAction(action)
-                }
+    private fun spawnFlayer(x: Float, y: Float) {
+        val cols = 4
+        val rows = 1
+        val flyer = assets.get<Texture>("flyer.png")
+        val regions = TextureRegion(flyer).split(flyer.width / cols, flyer.height / rows)
+        val animation = gdxArrayOf<TextureRegion>().apply {
+            (0 until cols).forEach { col -> add(TextureRegion(regions[0][col])) }
+        }
+        world.entity {
+            it += Render()
+            it += AnimationBag().apply {
+                animations["flyer"] = Animate(Animation(0.1f, animation), loop = true)
+                current = "flyer"
+            }
+            it += Transform().apply {
+                position.set(x, y)
             }
         }
     }

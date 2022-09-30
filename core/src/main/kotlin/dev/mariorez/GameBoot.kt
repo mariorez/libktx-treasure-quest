@@ -48,8 +48,17 @@ class GameBoot : KtxGame<KtxScreen>() {
 
         assets.apply {
             setLoader<TiledMap> { TmxMapLoader(fileResolver) }
-            loadSync<Texture>("hero.png").setFilter(Linear, Linear)
             loadSync<TiledMap>("map.tmx")
+            loadSync<Texture>("hero.png").setFilter(Linear, Linear)
+            loadSync<Texture>("bush.png").setFilter(Linear, Linear)
+            loadSync<Texture>("rock.png").setFilter(Linear, Linear)
+            loadSync<Texture>("gatekeeper.png").setFilter(Linear, Linear)
+            loadSync<Texture>("shopkeeper.png").setFilter(Linear, Linear)
+            loadSync<Texture>("flyer.png").setFilter(Linear, Linear)
+            loadSync<Texture>("treasure.png").setFilter(Linear, Linear)
+            loadSync<Texture>("heart-icon.png").setFilter(Linear, Linear)
+            loadSync<Texture>("arrow-icon.png").setFilter(Linear, Linear)
+            loadSync<Texture>("coin.png").setFilter(Linear, Linear)
         }
 
         addScreen(FirstScreen(sizes, assets))

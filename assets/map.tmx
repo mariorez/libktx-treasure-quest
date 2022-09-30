@@ -37,12 +37,12 @@
   </tile>
   <tile id="6">
    <properties>
-    <property name="type" value="shopheart"/>
+    <property name="type" value="heart-icon"/>
    </properties>
   </tile>
   <tile id="7">
    <properties>
-    <property name="type" value="shoparrow"/>
+    <property name="type" value="arrow-icon"/>
    </properties>
   </tile>
  </tileset>
@@ -117,10 +117,22 @@
    </properties>
   </object>
   <object id="23" name="gatekeeper" gid="46" x="464" y="928" width="32" height="32"/>
-  <object id="24" gid="47" x="800" y="832" width="32" height="32"/>
-  <object id="25" gid="48" x="896" y="832" width="32" height="32"/>
+  <object id="24" gid="47" x="800" y="832" width="32" height="32">
+   <properties>
+    <property name="type" value="heart-icon"/>
+   </properties>
+  </object>
+  <object id="25" gid="48" x="896" y="832" width="32" height="32">
+   <properties>
+    <property name="type" value="arrow-icon"/>
+   </properties>
+  </object>
   <object id="26" name="shopkeeper" gid="46" x="845.333" y="774.667" width="32" height="32"/>
-  <object id="30" gid="44" x="464.667" y="785.333" width="32" height="32"/>
+  <object id="30" gid="44" x="464.667" y="785.333" width="32" height="32">
+   <properties>
+    <property name="type" value="treasure"/>
+   </properties>
+  </object>
   <object id="36" gid="41" x="320" y="960" width="32" height="32"/>
   <object id="37" gid="41" x="288" y="992" width="32" height="32"/>
   <object id="38" gid="41" x="288" y="1024" width="32" height="32"/>
