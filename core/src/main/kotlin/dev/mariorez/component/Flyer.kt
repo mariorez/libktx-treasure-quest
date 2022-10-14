@@ -3,8 +3,8 @@ package dev.mariorez.component
 import com.github.quillraven.fleks.Component
 import com.github.quillraven.fleks.ComponentType
 
-class Enemy : Component<Enemy> {
-    override fun type() = Enemy
+class Flyer : Component<Flyer> {
+    override fun type() = Flyer
 
-    companion object : ComponentType<Enemy>()
+    companion object : ComponentType<Flyer>()
 }

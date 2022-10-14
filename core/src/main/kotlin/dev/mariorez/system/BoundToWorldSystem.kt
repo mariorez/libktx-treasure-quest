@@ -6,6 +6,7 @@ import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World
 import com.github.quillraven.fleks.World.Companion.inject
 import dev.mariorez.Sizes
+import dev.mariorez.component.Flyer
 import dev.mariorez.component.Player
 import dev.mariorez.component.Render
 import dev.mariorez.component.Transform
@@ -13,7 +14,7 @@ import dev.mariorez.component.Transform
 class BoundToWorldSystem(
     private val sizes: Sizes = inject()
 ) : IteratingSystem(
-    World.family { any(Player) }
+    World.family { any(Player, Flyer) }
 ) {
 
     private val sprites = mutableMapOf<Entity, Sprite>()

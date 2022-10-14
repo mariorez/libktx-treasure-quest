@@ -20,6 +20,10 @@ data class Transform(
         else velocity.setLength(speed)
     }
 
+    fun setMotionAngle(angle: Float) {
+        velocity.setAngleDeg(angle)
+    }
+
     override fun type() = Transform
 
     companion object : ComponentType<Transform>()

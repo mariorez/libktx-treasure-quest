@@ -19,7 +19,7 @@ import dev.mariorez.BaseScreen
 import dev.mariorez.Sizes
 import dev.mariorez.component.AnimationBag
 import dev.mariorez.component.AnimationBag.Animate
-import dev.mariorez.component.Enemy
+import dev.mariorez.component.Flyer
 import dev.mariorez.component.Player
 import dev.mariorez.component.Render
 import dev.mariorez.component.Solid
@@ -29,6 +29,7 @@ import dev.mariorez.system.BoundToWorldSystem
 import dev.mariorez.system.CameraSystem
 import dev.mariorez.system.InputSystem
 import dev.mariorez.system.MovementSystem
+import dev.mariorez.system.RandomMoveSystem
 import dev.mariorez.system.RenderSystem
 import ktx.assets.async.AssetStorage
 import ktx.assets.disposeSafely
@@ -42,6 +43,7 @@ import ktx.tiled.width
 import ktx.tiled.x
 import ktx.tiled.y
 import kotlin.properties.Delegates
+import kotlin.random.Random
 
 class FirstScreen(
     private val sizes: Sizes,
@@ -64,6 +66,7 @@ class FirstScreen(
         systems {
             add(InputSystem())
             add(MovementSystem())
+            add(RandomMoveSystem())
             add(BoundToWorldSystem())
             add(CameraSystem())
             add(AnimationSystem())
@@ -120,6 +123,7 @@ class FirstScreen(
                 obj.tile.properties.keys.forEach { key -> props.put(key, obj.tile.properties[key]) }
                 when (val type = obj.tile.properties["type"]) {
                     "flyer" -> spawnFlayer(obj.x, obj.y)
+
                     "bush", "rock", "treasure", "heart-icon", "arrow-icon", "coin" -> {
                         world.entity {
                             it += Solid(type.toString())
@@ -140,6 +144,7 @@ class FirstScreen(
             } else {
                 when (obj.type) {
                     "player" -> spawnPlayer(obj.x, obj.y)
+
                     "solid" -> {
                         world.entity {
                             it += Solid(obj.type.toString())
@@ -198,7 +203,7 @@ class FirstScreen(
             (0 until cols).forEach { col -> add(TextureRegion(regions[0][col])) }
         }
         world.entity {
-            it += Enemy()
+            it += Flyer()
             it += Render()
             it += AnimationBag().apply {
                 animations["flyer"] = Animate(Animation(0.1f, animation), loop = true)
@@ -206,6 +211,9 @@ class FirstScreen(
             }
             it += Transform().apply {
                 position.set(x, y)
+                maxSpeed = 80f
+                setSpeed(Random.nextInt(50, 80).toFloat())
+                setMotionAngle(Random.nextInt(0, 360).toFloat())
             }
         }
     }

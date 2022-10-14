@@ -1,14 +1,14 @@
 package dev.mariorez.system
 
-import com.badlogic.gdx.math.MathUtils
 import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
+import dev.mariorez.component.Flyer
 import dev.mariorez.component.Player
 import dev.mariorez.component.Transform
 
 class MovementSystem : IteratingSystem(
-    family { all(Player) }
+    family { any(Player, Flyer) }
 ) {
 
     override fun onTickEntity(entity: Entity) {
@@ -27,7 +27,7 @@ class MovementSystem : IteratingSystem(
             }
 
             // keep speed within set bounds
-            speed = MathUtils.clamp(speed, 0f, maxSpeed)
+            speed = speed.coerceIn(0f, maxSpeed)
 
             // update velocity
             setSpeed(speed)

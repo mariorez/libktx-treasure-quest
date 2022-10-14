@@ -29,7 +29,6 @@ abstract class BaseScreen(
         actionMap[ESCAPE] = EXIT_FULLSCREEN
     }
 
-
     open fun doAction(action: Action) {
         if (action.starting) {
             when (action) {
