@@ -22,11 +22,13 @@ import dev.mariorez.component.AnimationBag.Animate
 import dev.mariorez.component.Flyer
 import dev.mariorez.component.Player
 import dev.mariorez.component.Render
+import dev.mariorez.component.Reward
 import dev.mariorez.component.Solid
 import dev.mariorez.component.Transform
 import dev.mariorez.system.AnimationSystem
 import dev.mariorez.system.BoundToWorldSystem
 import dev.mariorez.system.CameraSystem
+import dev.mariorez.system.CollisionSystem
 import dev.mariorez.system.InputSystem
 import dev.mariorez.system.MovementSystem
 import dev.mariorez.system.RandomMoveSystem
@@ -67,6 +69,7 @@ class FirstScreen(
             add(InputSystem())
             add(MovementSystem())
             add(RandomMoveSystem())
+            add(CollisionSystem())
             add(BoundToWorldSystem())
             add(CameraSystem())
             add(AnimationSystem())
@@ -77,6 +80,14 @@ class FirstScreen(
     init {
         buildControls()
         spawnEntities()
+        with(world) {
+            // late injections
+            systems.forEach {
+                when (it) {
+                    is CollisionSystem -> it.player = player
+                }
+            }
+        }
     }
 
     override fun render(delta: Float) {
@@ -124,9 +135,17 @@ class FirstScreen(
                 when (val type = obj.tile.properties["type"]) {
                     "flyer" -> spawnFlayer(obj.x, obj.y)
 
-                    "bush", "rock", "treasure", "heart-icon", "arrow-icon", "coin" -> {
+                    "bush", "rock" -> {
                         world.entity {
                             it += Solid(type.toString())
+                            it += Render(Sprite(assets.get<Texture>("$type.png")))
+                            it += Transform().apply { position.set(obj.x, obj.y) }
+                        }
+                    }
+
+                    "treasure", "heart-icon", "arrow-icon", "coin" -> {
+                        world.entity {
+                            it += Reward(type.toString())
                             it += Render(Sprite(assets.get<Texture>("$type.png")))
                             it += Transform().apply { position.set(obj.x, obj.y) }
                         }
